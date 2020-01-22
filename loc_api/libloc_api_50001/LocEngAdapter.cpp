@@ -194,9 +194,11 @@ void LocEngAdapter::setXtraUserAgent() {
                 fclose(file);
 
                 // remove trailing spaces
-                size_t len = strlen(buf);
-                while (--len >= 0 && isspace(buf[len])) {
-                    buf[len] = '\0';
+                char *s;
+                s = buf + strlen(buf);
+                while (--s >= buf) {
+                    if (!isspace(*s)) break;
+                    *s = 0;
                 }
             }
 
@@ -375,14 +377,14 @@ void LocEngAdapter::reportPosition(UlpLocation &location,
     }
 }
 
-void LocInternalAdapter::reportSv(GnssSvStatus &svStatus,
+void LocInternalAdapter::reportSv(HaxxSvStatus &svStatus,
                                   GpsLocationExtended &locationExtended,
                                   void* svExt){
     sendMsg(new LocEngReportSv(mLocEngAdapter, svStatus,
                                locationExtended, svExt));
 }
 
-void LocEngAdapter::reportSv(GnssSvStatus &svStatus,
+void LocEngAdapter::reportSv(HaxxSvStatus &svStatus,
                              GpsLocationExtended &locationExtended,
                              void* svExt)
 {

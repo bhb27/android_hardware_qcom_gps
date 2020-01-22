@@ -1,26 +1,20 @@
-ifneq ($(BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE),)
-ifneq ($(BUILD_TINY_ANDROID),true)
-
 LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
 LOCAL_MODULE := libloc_core
 LOCAL_MODULE_OWNER := qcom
+LOCAL_PROPRIETARY_MODULE := true
 
 LOCAL_MODULE_TAGS := optional
 
-ifeq ($(TARGET_DEVICE),apq8026_lw)
-LOCAL_CFLAGS += -DPDK_FEATURE_SET
-else ifeq ($(BOARD_VENDOR_QCOM_LOC_PDK_FEATURE_SET),true)
-LOCAL_CFLAGS += -DPDK_FEATURE_SET
-endif
-
 LOCAL_SHARED_LIBRARIES := \
     libutils \
+    liblog \
     libcutils \
     libgps.utils \
-    libdl
+    libdl \
+    libprocessgroup
 
 LOCAL_SRC_FILES += \
     LocApiBase.cpp \
@@ -31,11 +25,12 @@ LOCAL_SRC_FILES += \
 
 LOCAL_CFLAGS += \
      -fno-short-enums \
-     -D_ANDROID_
+     -D_ANDROID_ \
+     -Wno-unused-parameter \
+     -Wno-error \
 
 LOCAL_C_INCLUDES:= \
-    $(TARGET_OUT_HEADERS)/gps.utils \
-    $(TARGET_OUT_HEADERS)/libflp
+    $(TARGET_OUT_HEADERS)/gps.utils
 
 LOCAL_COPY_HEADERS_TO:= libloc_core/
 LOCAL_COPY_HEADERS:= \
@@ -50,9 +45,4 @@ LOCAL_COPY_HEADERS:= \
     loc_core_log.h \
     LocAdapterProxyBase.h
 
-LOCAL_PRELINK_MODULE := false
-
 include $(BUILD_SHARED_LIBRARY)
-
-endif # not BUILD_TINY_ANDROID
-endif # BOARD_VENDOR_QCOM_GPS_LOC_API_HARDWARE

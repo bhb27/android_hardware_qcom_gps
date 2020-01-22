@@ -826,7 +826,7 @@ void LocEngReportPosition::send() const {
 
 //        case LOC_ENG_MSG_REPORT_SV:
 LocEngReportSv::LocEngReportSv(LocAdapterBase* adapter,
-                               GnssSvStatus &sv,
+                               HaxxSvStatus &sv,
                                GpsLocationExtended &locExtended,
                                void* svExt) :
     LocMsg(), mAdapter(adapter), mSvStatus(sv),
@@ -1387,6 +1387,8 @@ struct LocEngInit : public LocMsg {
         loc_eng_reinit(*mLocEng);
         // set the capabilities
         mLocEng->adapter->sendMsg(new LocEngSetCapabilities(mLocEng));
+        //Unlock the gps
+        mLocEng->adapter->setGpsLock(1);
     }
     inline void locallog() const
     {
